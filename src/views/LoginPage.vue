@@ -50,9 +50,7 @@ export default class LoginPage extends Vue {}
   font-size: 50px;
 }
 .v-main {
-  background-image: url(https://i.fbcd.co/products/resized/resized-750-500/e29d5583f90410ee3072688e086ce32540170d92137ebe3e335ef9857572b31c.jpg);
-  background-size: auto;
-  background-position: left top;
-  background-repeat: repeat;
+  background-image: url('../assets/bg.jpg');
+  background-size: cover;
 }
 </style>
