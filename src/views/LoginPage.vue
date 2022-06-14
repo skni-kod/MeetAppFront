@@ -49,4 +49,8 @@ export default class LoginPage extends Vue {}
   font-weight: bold;
   font-size: 50px;
 }
+.v-main {
+  background-image: url('../assets/bg.jpg');
+  background-size: cover;
+}
 </style>
