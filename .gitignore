@@ -1,7 +1,3 @@
-#api keys
-.env
-
-#dependecies
 .DS_Store
 node_modules
 /dist
