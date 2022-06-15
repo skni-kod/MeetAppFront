@@ -72,8 +72,6 @@ export default class HomePage extends Vue {
     const success = (position: any) => {
       this.$data.center.lat = position.coords.latitude
       this.$data.center.lng = position.coords.longitude
-
-      // Do something with the position
     }
 
     const error = (err: any) => {
@@ -121,7 +119,7 @@ export default class HomePage extends Vue {
 
       console.log(adresBezSpacji)
       fetch(
-        `${this.$data.url}${this.$data.items[i].miasto}+${adresBezSpacji}&key=AIzaSyDwWvNXdOWCV848wJv-kcCFokOWkJp44pQ`,
+        `${this.$data.url}${this.$data.items[i].miasto}+${adresBezSpacji}&key=${process.env.VUE_APP_GOOGLE_API_KEY}`,
       )
         .then((response) => {
           if (response.ok) {
