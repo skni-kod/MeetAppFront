@@ -1,9 +1,14 @@
 <template>
   <v-app id="drawer">
-    <v-navigation-drawer v-model="drawer" app color="primary" :width="325">
+    <v-navigation-drawer
+      v-model="this.$store.state.drawer"
+      app
+      color="primary"
+      :width="325"
+    >
       <v-row class="accent pa-2 ma-0" align="center" justify="center">
-        <v-col cols="12" class="text-center">
-          <input
+        <v-col cols="12" class="text-center"
+          ><input
             type="text"
             placeholder="Wyszukaj wydarzenia"
             class="white pl-2 py-2"
@@ -23,11 +28,15 @@
                 <h3>{{ item.title }}</h3>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <b>Miasto: </b>{{ item.miasto }}
+                <b>Miasto: </b>{{ item.city }}
                 <br />
-                <b>Adres: </b> {{ item.adres }}
+                <b>Adres: </b> {{ item.address }}
                 <br />
-                <b>Data: </b>{{ item.data }}
+                <b>Data: </b>{{ item.date }}
+                <br />
+                <b>Godzina: </b>{{ item.time }}
+                <br />
+                <b>Opis: </b>{{ item.description }}
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -35,11 +44,6 @@
       </v-row>
     </v-navigation-drawer>
 
-    <v-app-bar app>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
-      <v-toolbar-title>MeetApp</v-toolbar-title>
-    </v-app-bar>
     <!---------------------------------------------------------------->
     <v-main class="pa-0">
       <GmapMap
@@ -54,7 +58,6 @@
           :position="maps.position"
           :clickable="true"
           :draggable="true"
-          @click="center = this.$data.center"
         />
       </GmapMap>
     </v-main>
@@ -64,7 +67,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import axios from 'axios'
+import axios from '@/axios'
 
 @Component
 export default class HomePage extends Vue {
@@ -80,9 +83,9 @@ export default class HomePage extends Vue {
 
     // This will open permission popup
     navigator.geolocation.getCurrentPosition(success, error)
-    this.getMarkers()
+    this.downloadData()
   }
-  drawer = false
+
   data() {
     return {
       markers: [],
@@ -90,56 +93,57 @@ export default class HomePage extends Vue {
       options: {
         gestureHandling: 'greedy',
       },
-      items: [
-        {
-          title: 'Wydarzenie 1',
-          data: '25.04.2025',
-          miasto: 'Rzeszow',
-          adres: 'ul. Jana pawła II 3',
-        },
-        {
-          title: 'Awooga 2',
-          data: '25.04.2025',
-          miasto: 'Kolbuszowa',
-          adres: 'ul. Partyzantow 28B',
-        },
-        {
-          title: 'Impreza 3',
-          data: '25.04.2025',
-          miasto: 'Kolbuszowa',
-          adres: 'ul. Jana pawła II 5',
-        },
-      ],
+      items: [],
       url: 'https://maps.googleapis.com/maps/api/geocode/json?address=',
+      field1: '',
     }
   }
   getMarkers() {
     for (let i = 0; i < this.$data.items.length; i++) {
-      const adresBezSpacji = this.$data.items[i].adres.replace(/ /g, '%')
+      const adresBezSpacji = this.$data.items[i].address.replace(/ /g, '%')
 
       console.log(adresBezSpacji)
-      fetch(
-        `${this.$data.url}${this.$data.items[i].miasto}+${adresBezSpacji}&key=${process.env.VUE_APP_GOOGLE_API_KEY}`,
-      )
+      axios
+        .get(
+          `${this.$data.url}${this.$data.items[i].city}+${adresBezSpacji}&key=${process.env.VUE_APP_GOOGLE_API_KEY}`,
+        )
         .then((response) => {
-          if (response.ok) {
-            return response.json()
+          if (response.status === 200) {
+            {
+              this.$data.markers.push({
+                position: {
+                  lat: response.data.results[0].geometry.location.lat,
+                  lng: response.data.results[0].geometry.location.lng,
+                },
+              })
+            }
           } else {
             throw new Error('Błąd sieci')
           }
-        })
-        .then((data) => {
-          this.$data.markers.push({
-            position: {
-              lat: data.results[0].geometry.location.lat,
-              lng: data.results[0].geometry.location.lng,
-            },
-          })
         })
         .catch((error) => {
           console.error('Nie działa')
         })
     }
   }
+  downloadData() {
+    axios
+      .get(`https://meet-app-projekt.herokuapp.com/user/api/Event/`)
+      .then((res) => {
+        if (res.status === 200) {
+          console.log(res.data)
+          this.$data.items = res.data
+          this.getMarkers()
+        }
+      })
+      .catch(() => {
+        console.log('Błąd w pobieraniu danych')
+      })
+  }
 }
 </script>
+<style>
+.v-btn--active::before {
+  opacity: 0 !important;
+}
+</style>
