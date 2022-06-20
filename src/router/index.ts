@@ -22,6 +22,12 @@ const routes: Array<RouteConfig> = [
       hideNavbar: true,
     },
   },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () =>
+      import(/* webpackChunkName: "profile" */ '@/views/Profile.vue'),
+  },
 ]
 
 const router = new VueRouter({
