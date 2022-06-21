@@ -65,7 +65,7 @@
             @closeclick="openMarker(null)"
             :opened="openedMarkerID === maps.id"
           >
-            <div>{{ items[id].description }}</div>
+            <div>{{ maps.description }}</div>
           </gmap-info-window></GmapMarker
         >
       </GmapMap>
@@ -109,7 +109,7 @@ export default class HomePage extends Vue {
   }
   getMarkers() {
     for (let i = 0; i < this.$data.items.length; i++) {
-      const adresBezSpacji = this.$data.items[i].address.replace(/ /g, '%')
+      const adresBezSpacji = this.$data.items[i].address.replace(/ /g, '+')
       axios
         .get(
           `${this.$data.url}${this.$data.items[i].city}+${adresBezSpacji}&key=${process.env.VUE_APP_GOOGLE_API_KEY}`,
@@ -120,12 +120,13 @@ export default class HomePage extends Vue {
               let index = i + 1
               const labelString = index.toString()
               this.$data.markers.push({
-                id: index,
+                id: i,
                 position: {
                   lat: response.data.results[0].geometry.location.lat,
                   lng: response.data.results[0].geometry.location.lng,
                 },
                 label: labelString,
+                description: this.$data.items[i].description,
               })
               console.log(this.$data.markers[i].label)
             }

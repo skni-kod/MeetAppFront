@@ -7,8 +7,11 @@
     >
     <v-spacer></v-spacer>
     <v-toolbar-items class="mx-0">
+      <v-btn outlined class="secondary accent--text" to="/faq"
+        >FAQ <v-icon>mdi-frequently-asked-questions</v-icon></v-btn
+      >
       <v-btn outlined class="secondary accent--text" to="/profile"
-        >Profil<v-icon>mdi-account</v-icon></v-btn
+        >Profil <v-icon>mdi-account</v-icon></v-btn
       >
       <v-btn
         outlined
