@@ -5,12 +5,21 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    nickname: 'admin',
-    password: 'admin',
+    user: {
+      nickname: 'admin',
+      password: 'admin',
+    },
     drawer: false,
     loggedIn: false,
   },
-  getters: {},
+  getters: {
+    getUser(state) {
+      return {
+        nickname: state.user.nickname,
+        password: state.user.password,
+      }
+    },
+  },
   mutations: {
     toggleDrawer(state) {
       state.drawer = !state.drawer

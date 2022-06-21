@@ -1,14 +1,20 @@
 <template>
-  <v-app-bar app>
+  <v-app-bar class="primary" app>
     <v-app-bar-nav-icon @click="zmien()"></v-app-bar-nav-icon>
 
     <v-toolbar-title
       ><v-btn text to="/"><b>MeetApp</b></v-btn></v-toolbar-title
     >
     <v-spacer></v-spacer>
-    <v-toolbar-items>
-      <v-btn to="/profile">Profil<v-icon>mdi-account</v-icon></v-btn>
-      <v-btn @click="auth ? logout() : login()">
+    <v-toolbar-items class="mx-0">
+      <v-btn outlined class="secondary accent--text" to="/profile"
+        >Profil<v-icon>mdi-account</v-icon></v-btn
+      >
+      <v-btn
+        outlined
+        class="secondary accent--text"
+        @click="auth ? logout() : login()"
+      >
         {{ auth ? 'Wyloguj' : 'Zaloguj' }}
         <v-icon>{{ text.icon }}</v-icon>
       </v-btn>

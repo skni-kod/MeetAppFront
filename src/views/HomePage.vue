@@ -34,8 +34,6 @@
                 <br />
                 <b>Data: </b>{{ item.date }}
                 <br />
-                <b>Godzina: </b>{{ item.time }}
-                <br />
                 <b>Opis: </b>{{ item.description }}
               </v-expansion-panel-content>
             </v-expansion-panel>

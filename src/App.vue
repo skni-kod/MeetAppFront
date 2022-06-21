@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <NavBar />
+      <NavBar v-if="this.$store.state.loggedIn == true" />
       <router-view @zalogowano="setLogin" />
     </v-main>
   </v-app>

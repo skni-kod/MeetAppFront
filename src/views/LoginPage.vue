@@ -58,8 +58,8 @@ export default class LoginPage extends Vue {
   login() {
     if (this.$store.state.loggedIn === false) {
       if (
-        this.$data.login == this.$store.state.login &&
-        this.$data.password == this.$store.state.password
+        this.$data.login == this.$store.state.user.login &&
+        this.$data.password == this.$store.state.user.password
       ) {
         this.$emit('zalogowano', true)
         this.$router.replace({ name: 'home' })
