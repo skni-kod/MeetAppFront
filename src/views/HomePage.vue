@@ -23,9 +23,10 @@
               class="white"
               v-for="(item, id) in items"
               :key="id"
+              @click="openMarker(id)"
             >
               <v-expansion-panel-header>
-                <h3>{{ item.title }}</h3>
+                <h3>{{ id + 1 }}. {{ item.title }}</h3>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <b>Miasto: </b>{{ item.city }}
@@ -49,14 +50,24 @@
         :zoom="9"
         :options="options"
         map-type-id="roadmap"
+        ref="myMapRef"
         style="width: 100vw; height: 100vh"
         ><GmapMarker
           :key="id"
           v-for="(maps, id) in markers"
           :position="maps.position"
+          :label="maps.label"
           :clickable="true"
           :draggable="true"
-        />
+          @click="openMarker(maps.id)"
+          ><gmap-info-window
+            :closeclick="true"
+            @closeclick="openMarker(null)"
+            :opened="openedMarkerID === maps.id"
+          >
+            <div>{{ items[id].description }}</div>
+          </gmap-info-window></GmapMarker
+        >
       </GmapMap>
     </v-main>
   </v-app>
@@ -83,9 +94,9 @@ export default class HomePage extends Vue {
     navigator.geolocation.getCurrentPosition(success, error)
     this.downloadData()
   }
-
   data() {
     return {
+      openedMarkerID: null,
       markers: [],
       center: { lat: 50.041187, lng: 21.999121 },
       options: {
@@ -99,8 +110,6 @@ export default class HomePage extends Vue {
   getMarkers() {
     for (let i = 0; i < this.$data.items.length; i++) {
       const adresBezSpacji = this.$data.items[i].address.replace(/ /g, '%')
-
-      console.log(adresBezSpacji)
       axios
         .get(
           `${this.$data.url}${this.$data.items[i].city}+${adresBezSpacji}&key=${process.env.VUE_APP_GOOGLE_API_KEY}`,
@@ -108,12 +117,17 @@ export default class HomePage extends Vue {
         .then((response) => {
           if (response.status === 200) {
             {
+              let index = i + 1
+              const labelString = index.toString()
               this.$data.markers.push({
+                id: index,
                 position: {
                   lat: response.data.results[0].geometry.location.lat,
                   lng: response.data.results[0].geometry.location.lng,
                 },
+                label: labelString,
               })
+              console.log(this.$data.markers[i].label)
             }
           } else {
             throw new Error('Błąd sieci')
@@ -129,7 +143,6 @@ export default class HomePage extends Vue {
       .get(`https://meet-app-projekt.herokuapp.com/user/api/Event/`)
       .then((res) => {
         if (res.status === 200) {
-          console.log(res.data)
           this.$data.items = res.data
           this.getMarkers()
         }
@@ -137,6 +150,9 @@ export default class HomePage extends Vue {
       .catch(() => {
         console.log('Błąd w pobieraniu danych')
       })
+  }
+  openMarker(id: any) {
+    this.$data.openedMarkerID = id
   }
 }
 </script>

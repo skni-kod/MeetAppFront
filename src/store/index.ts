@@ -19,6 +19,9 @@ export default new Vuex.Store({
         password: state.user.password,
       }
     },
+    getDrawer(state) {
+      return state.drawer
+    },
   },
   mutations: {
     toggleDrawer(state) {
