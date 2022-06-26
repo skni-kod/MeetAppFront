@@ -5,42 +5,61 @@
       app
       color="primary"
       :width="325"
-    >
-      <v-row class="accent pa-2 ma-0" align="center" justify="center">
-        <v-col cols="12" class="text-center"
-          ><input
-            type="text"
+      ><v-layout
+        align-center
+        justify-space-between
+        column
+        fill-height
+        fill-width
+        ><v-container class="accent py-6">
+          <input
+            type="search"
             placeholder="Wyszukaj wydarzenia"
             class="white pl-2 py-2"
-            style="border-radius: 7px; width: 100%"
-        /></v-col>
-      </v-row>
-      <h1 class="text-center pa-3 accent--text">Lista wydarzeń</h1>
-      <v-row>
-        <v-col cols="12">
-          <v-expansion-panels multiple>
-            <v-expansion-panel
-              class="white"
-              v-for="(item, id) in items"
-              :key="id"
-              @click="openMarker(id)"
-            >
-              <v-expansion-panel-header>
-                <h3>{{ id + 1 }}. {{ item.title }}</h3>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <b>Miasto: </b>{{ item.city }}
-                <br />
-                <b>Adres: </b> {{ item.address }}
-                <br />
-                <b>Data: </b>{{ item.date }}
-                <br />
-                <b>Opis: </b>{{ item.description }}
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-col>
-      </v-row>
+            style="border-radius: 7px"
+            v-model="field1"
+            @keypress="checkEvent"
+        /></v-container>
+
+        <h1 class="text-center pa-3 accent--text">Lista wydarzeń</h1>
+        <v-row>
+          <v-col cols="12">
+            <v-expansion-panels multiple>
+              <v-expansion-panel
+                class="white"
+                v-for="(item, id) in items"
+                :key="id"
+                @click="openMarker(id)"
+              >
+                <v-expansion-panel-header>
+                  <h3>{{ id + 1 }}. {{ item.title }}</h3>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <b>Miasto: </b>{{ item.city }}
+                  <br />
+                  <b>Adres: </b> {{ item.address }}
+                  <br />
+                  <b>Data: </b>{{ item.date }}
+                  <br />
+                  <b>Opis: </b>{{ item.description }}
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-col>
+        </v-row>
+        <v-dialog v-model="dialog"
+          ><template v-slot:activator="{ on, attrs }">
+            <v-btn
+              justify-end
+              exact
+              v-bind="attrs"
+              v-on="on"
+              class="secondary mb-4"
+              >Stwórz nowe wydarzenie</v-btn
+            ></template
+          ><NewEvent
+        /></v-dialog>
+      </v-layout>
     </v-navigation-drawer>
 
     <!---------------------------------------------------------------->
@@ -77,8 +96,13 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import axios from '@/axios'
+import NewEvent from '@/components/NewEvent.vue'
 
-@Component
+@Component({
+  components: {
+    NewEvent,
+  },
+})
 export default class HomePage extends Vue {
   created() {
     const success = (position: any) => {
@@ -96,6 +120,7 @@ export default class HomePage extends Vue {
   }
   data() {
     return {
+      dialog: false,
       openedMarkerID: null,
       markers: [],
       center: { lat: 50.041187, lng: 21.999121 },
@@ -155,10 +180,18 @@ export default class HomePage extends Vue {
   openMarker(id: any) {
     this.$data.openedMarkerID = id
   }
+  checkEvent(e: KeyboardEvent) {
+    if (e.key == 'Enter') {
+      return true
+    }
+  }
 }
 </script>
 <style>
 .v-btn--active::before {
   opacity: 0 !important;
+}
+input {
+  width: 100%;
 }
 </style>
