@@ -61,16 +61,11 @@ export default class NewEvent extends Vue {
         date: this.$data.eventDate,
         description: this.$data.eventDescription,
       })
-      .then(function (response) {
+      .then((response) => {
         console.log(response)
         console.log(this.$data.event)
-        this.$data.eventTitle = ''
-        this.$data.eventCity = ''
-        this.$data.eventAddress = ''
-        this.$data.eventDate = null
-        this.$data.eventDescription = ''
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error)
       })
   }
